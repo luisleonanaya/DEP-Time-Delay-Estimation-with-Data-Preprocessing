@@ -115,6 +115,17 @@ formatted_output_lead_CF_trend = None
 formatted_output_delayed_CF_trend = None
 figCF = None
 df = None
+
+"""
+DEP: Time Delay Estimation with Data Preprocessing
+
+This script initializes the graphical user interface for DEP, providing tools for uploading light curve data,
+applying preprocessing techniques, visualizing light curves and their statistical attributes, and estimating time delays between light curves with various methodologies.
+
+Usage:
+- Run this script with Python 3.x.
+- Follow the GUI prompts to upload light curve data files, select preprocessing options, and perform time delay estimations.
+"""
 ########
 # this dictionary is declared to pass as an argument to a external function to export results to csv file
 global_vars = {
@@ -216,10 +227,10 @@ display_initial_image(framePlot_lcAB)
 # Function to handle file upload
 def upload_file(series_num):
     """
-    This function allows the user to upload a CSV or a TXT file and reads it into a pandas DataFrame.
-    The first row is dismissed if it contains headers. The file should contain three numerical columns.
+    Allows the user to upload CSV or TXT files containing light curve data.
+    The file should contain three numerical columns: time, magnitude, and magnitude error. First row is dismissed if it contains headers.
     Args:
-    series_num (int): An identifier for the series of data being uploaded.
+        series_num (int): Identifier for the series of data being uploaded (1 for lead curve, 2 for delayed curve).
     """
     # Allow both CSV and TXT files, and ask the user to select a file
     file_path = filedialog.askopenfilename(filetypes=[("CSV and TXT files", "*.csv *.txt")])
@@ -265,6 +276,27 @@ def upload_file(series_num):
         messagebox.showerror("Error", f"An error occurred: {e}")
 # Function to display results in the text area
 def display_results():
+    """
+    Handles the process of collecting user inputs for delay estimation, initiates the computation of time delays between light curves using selected preprocessing and estimation methods, and displays the results in the GUI.
+
+    This function acts as a central coordinator in the DEP application. It retrieves user-selected options for preprocessing and delay estimation methods, processes the uploaded light curve data according to these selections, computes the time delay, and updates the GUI with the results.
+
+    Global Variables:
+    - preprocessing_selectionAA (str): Indicates the preprocessing method chosen by the user.
+    - delayMethod_selectionAA (str): Indicates the time delay estimation method chosen by the user.
+
+    Workflow:
+    1. Clears the results display frame for new output.
+    2. Validates the user input for the known delay or the selected search range.
+    3. Processes the uploaded light curve data according to the selected preprocessing method.
+    4. Computes the time delay using the chosen delay estimation method.
+    5. Displays the computed time delay and associated statistical data in the GUI's result section.
+
+    Note:
+    - This function interacts with multiple global variables that store user selections and data.
+    - It relies on external functions for specific preprocessing steps and time delay computations.
+    - Errors during file upload or processing are handled gracefully, with messages displayed to the user through the GUI.
+    """
     # declarataion for use of global variables to use the export_to_pdf function
     global preprocessing_selectionAA
     global delayMethod_selectionAA
@@ -2270,6 +2302,28 @@ def display_results():
         pass
 
 def display_statistical_analysis():
+    """
+    Generates and displays statistical analysis of the uploaded light curves in the GUI, 
+    including histograms for raw data and processed data according to the selected preprocessing method.
+
+    This function checks the availability of light curve data and the selected preprocessing method, then generates histograms and descriptive statistics for each light curve. These analyses are displayed in dedicated frames within the application's GUI.
+
+    Global Variables:
+    - frameStatistical_A (tk.Frame): Frame for displaying the statistical analysis and histogram of the lead light curve.
+    - frameStatistical_B (tk.Frame): Frame for displaying the statistical analysis and histogram of the delayed light curve.
+    - canvasSecond (tk.Canvas): Canvas used for plotting histograms in the GUI.
+    - initial_canvas (tk.Canvas): Initial canvas displayed at the start of the application, referenced to avoid overlaps with statistical plots.
+
+    Workflow:
+    1. Validates the existence of light curve data and the selected preprocessing method.
+    2. Clears previous statistical analysis frames to prevent overlap.
+    3. Generates histograms for raw and processed light curves depending on the preprocessing selection.
+    4. Displays histograms and descriptive statistics within the GUI.
+
+    Note:
+    - This function is dependent on the global `series_data` variable that stores the uploaded light curve data.
+    - The actual plotting is done using matplotlib, and the plots are integrated into the Tkinter GUI via the FigureCanvasTkAgg widget.
+    """
     if series_data[1] is None or series_data[2] is None:
         return
     preprocessing_selectionSA = preprocessing_selection.get()
@@ -4104,6 +4158,30 @@ def display_statistical_analysis():
         export_button.grid(row=0, column=1, pady=10)
         ##########End of function
 def export_both_statistics():
+    """
+    Exports statistical analysis and histograms to PDF files. This function generates two PDF reports:
+    one for the CF-cycle data and another for the CF-trend data. Each report includes histograms of the lead
+    and delayed light curves along with their descriptive statistics.
+
+    Global Variables:
+    - figCFcycle_A, figCFcycle_B: Matplotlib figures for the CF-cycle histograms.
+    - formatted_output_lead_CF_cycle, formatted_output_delayed_CF_cycle: Strings containing descriptive statistics for CF-cycle.
+    - figCFtrend_A, figCFtrend_B: Matplotlib figures for the CF-trend histograms.
+    - formatted_output_lead_CF_trend, formatted_output_delayed_CF_trend: Strings containing descriptive statistics for CF-trend.
+    - figCF: An additional figure that might be used in the report.
+
+    The function makes two separate calls to `export_histogram_and_stats_to_pdf` with different parameters
+    to generate the two reports. Each report contains the histograms, descriptive statistics, and an optional
+    additional figure if provided.
+
+    Parameters for `export_histogram_and_stats_to_pdf` include:
+    - figures: A list of matplotlib figure objects to be included in the report.
+    - stats_data: A list of strings containing descriptive statistics.
+    - headers: A list of headers for each section of the report.
+    - additional_figure: An optional matplotlib figure object to be included at the end of the report.
+    - initial_dir: Directory to open the save dialog in.
+    - initial_file: Default name for the saved PDF file.
+    """
     # First call to export function
     global figCFcycle_A
     global figCFcycle_B
@@ -4141,16 +4219,36 @@ def export_both_statistics():
     )
 
 def enable_entryTrueDelayBox():
+    """
+    Enables the entry box for direct input of the true or guessed time delay and disables the range search combobox.
+    This function is typically bound to a radio button selection indicating the user's choice to input a specific
+    delay value directly.
+    """
     delayEntry.config(state='normal')
     timeDelay_range_search.config(state='disabled')
     delayLabel.config(text="Insert true or guess delay")
 
 def enable_SearchRange_combobox():
+    """
+    Enables the combobox for selecting a range of search for the time delay and disables the direct input entry box.
+    This function is typically bound to a radio button selection indicating the user's choice to select a delay
+    range from predefined options.
+    """
     timeDelay_range_search.config(state='normal')
     delayEntry.config(state='disabled')
     delayLabel.config(text="Choose a range of search")
 # This function update the value in the dictionary for global variables
 def update_global_vars():
+    """
+    Updates the `global_vars` dictionary with the current selections and results from the delay estimation process.
+    This function consolidates the latest application state into a single global dictionary, making it accessible
+    for other operations such as exporting results.
+
+    Updates include:
+    - preprocessing selection,
+    - delay estimation method selection,
+    - any generated results from the delay estimation processes.
+    """
     global global_vars
     global_vars = {
         'preprocessing_selectionAA': preprocessing_selectionAA,
@@ -4211,6 +4309,15 @@ def update_global_vars():
 
 # Trough this function is called an external function to save the results in a csv file
 def save_button_command():
+    """
+    Invokes the process to save the current results to a CSV file when the 'Save delay results to CSV' button is clicked.
+    This function first updates the `global_vars` dictionary to ensure it contains the latest application state and
+    results, then calls `determine_and_save_csv` to prompt the user for a file location and save the results.
+
+    Note:
+    - `determine_and_save_csv` is expected to use `global_vars` to determine which results to save and handle the file
+      writing operation.
+    """
     update_global_vars()  # Ensure global_vars has the latest values
     global global_vars  # Declare global_vars as global
     global_vars = determine_and_save_csv(global_vars)

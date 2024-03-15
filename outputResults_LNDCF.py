@@ -1,8 +1,23 @@
-
 from tkinter import ttk
 
-
 def display_lndcf_results_knownDelay(frame, row1, row2, row3, row4):
+    """
+    Displays Locally Normalized Discrete Correlation Function (LNDCF) results for known delays in a
+    structured Treeview within a given frame. This function is designed to offer an organized
+    visualization of the LNDCF results, emphasizing the statistical details of the analysis.
+
+    Args:
+        frame (tk.Frame): The parent frame where the Treeview will be displayed.
+        row1 (pd.Series): Series containing data for "Min error" correlation.
+        row2 (pd.Series): Series containing data for "Max correlation".
+        row3 (pd.Series): Series containing data for "Mean correlation".
+        row4 (pd.Series): Series containing data for "Mode correlation".
+
+    This method sets up the Treeview widget with specific columns relevant to LNDCF analysis, such
+    as 'LNDCF Max', 'Estimated Delay', among others. It ensures each piece of data is correctly
+    placed within its designated column, providing a clear and comprehensive display of the LNDCF
+    results for known delays.
+    """
     # Create a Treeview widget
     tree_height = 9
     treeDisplay = ttk.Treeview(frame, columns=('Description', 'LNDCF Max', 'Estimated Delay', 'bin', 'delta min', 'delta max', 'uncertainty', 'error'),
@@ -50,12 +65,20 @@ def display_lndcf_results_knownDelay(frame, row1, row2, row3, row4):
 
 def display_lndcf_results_searchRange(frame, row1, row2, row3):
     """
-    Display LNDCF results in a Treeview within a specified frame.
+    Showcases LNDCF results for a range of search delays in a concise Treeview format within the
+    specified frame. Tailored for cases where the delay is not precisely known but rather searched
+    within a defined range, highlighting key statistical outcomes of the LNDCF analysis.
+
     Args:
-    frame (tk.Frame): The Tkinter frame where the Treeview will be placed.
-    row1 (pd.Series): Data for the first row to be displayed.
-    row2 (pd.Series): Data for the second row to be displayed.
-    row3 (pd.Series): Data for the third row to be displayed.
+        frame (tk.Frame): Frame for embedding the Treeview widget.
+        row1 (pd.Series): Series data for "Max correlation" measure.
+        row2 (pd.Series): Series data for "Mean correlation" measure.
+        row3 (pd.Series): Series data for "Mode correlation" measure.
+
+    The function configures a Treeview widget for visualizing LNDCF results, minus the error column
+    used in known delay scenarios, thus focusing on 'LNDCF Max', 'Estimated Delay', and other
+    pertinent columns. It aims to deliver a straightforward presentation of the LNDCF findings
+    within the context of delay search range analysis.
     """
     # Create a Treeview widget
     tree_height = 7  # Adjusted for three rows
@@ -97,5 +120,4 @@ def display_lndcf_results_searchRange(frame, row1, row2, row3):
     treeDisplay.column('uncertainty', anchor='center', minwidth=76, width=80)
     # Set the Treeview in the grid
     treeDisplay.grid(row=0, column=0)
-    # Example of call function
-    # display_ccf_results_searchRange(frameResults, row_1_antepenultimate, row_2_penultimate, row_3_last)
+

@@ -3,25 +3,50 @@ from tkinter import messagebox
 
 # To optionally save the results csv file
 def save_dataframe_to_csv(df_to_save, default_name):
-    if df_to_save is not None:
+    """
+    Presents a file dialog for the user to save a DataFrame as a CSV file. It also handles the file saving process and displays a success or failure message.
+
+    Args:
+        df_to_save (DataFrame): The pandas DataFrame to save as a CSV file.
+        default_name (str): The default name proposed in the save file dialog.
+
+    Returns:
+        None: This function does not return a value. It either saves the file and shows a success message or displays an error message.
+    """
+    if df_to_save is not None: # Checks if the DataFrame to save is not empty
+    # Opens a file dialog for the user to choose where to save the CSV
         file_path = filedialog.asksaveasfilename(
             defaultextension='.csv',
             filetypes=[("CSV files", '*.csv'), ("All files", '*.*')],
             title="Save file as...",
             initialfile=default_name
         )
+        # If a file path was selected, tries to save the DataFrame to this path
         if file_path:
             try:
+             # Saves the DataFrame to the specified path as a CSV file
                 df_to_save.to_csv(file_path, index=True, header=True)
+             # Displays a success message upon successful saving
                 messagebox.showinfo("Success", f"File saved successfully at {file_path}")
             except Exception as e:
+             # Displays an error message if the save operation fails
                 messagebox.showerror("Save Failed", f"Failed to save file: {e}")
     else:
+    # Displays an error message if there's no data to save
         messagebox.showerror("Save Failed", "There is no data to save.")
 
 # This is the function that gets called when the save button is pressed.
 # It determines which DataFrame to save based on a series of conditions.
 def determine_and_save_csv(global_vars):
+    """
+    Determines which DataFrame to save based on preprocessing and delay method selection. It leverages global variables to access various DataFrames and save a selected one as a CSV file, based on a series of conditional checks.
+
+    Args:
+        global_vars (dict): A dictionary containing global variables, which include user selections for preprocessing, delay methods, and DataFrames generated from analysis.
+
+    Returns:
+        None: This function does not return a value. It initiates the save process for the appropriate DataFrame or shows an error message if the required data is not available.
+    """
         # Access global variables via global_vars dictionary
     preprocessing_selectionAA = global_vars['preprocessing_selectionAA']
     delayMethod_selectionAA = global_vars['delayMethod_selectionAA']

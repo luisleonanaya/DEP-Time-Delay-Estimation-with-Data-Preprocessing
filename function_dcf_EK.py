@@ -32,6 +32,7 @@ from search_ranges.delta_options_420_440 import delta_options_420_440
 import pandas as pd
 import numpy as np
 
+
 def adjust_time(lcA, lcB):
     """
     Synchronize the time columns of two light curve arrays by adjusting them
@@ -105,8 +106,23 @@ def preformat_lightcurves(df_lcA, df_lcB):
     return lc_A, lc_B
     
     
-def dcf(lcA, lcB, t, dt):
-    #discrete cross-correlation function method
+def dcf(lcA, lcB, t, dt):#discrete cross-correlation function method
+    """
+    Implements the discrete correlation function (DCF) by Edelson and Krolik to calculate the time delay
+    between two light curves. This method is pivotal for analyzing astronomical data, particularly in 
+    understanding temporal relationships between observations of gravitationally lensed quasars.
+
+    Args:
+        lcA (np.ndarray): Numpy array for the first light curve.
+        lcB (np.ndarray): Numpy array for the second light curve.
+        trudelay (float): The true delay between the light curves for simulation purposes.
+        prep_technique (str): The preprocessing technique applied to the light curves.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the DCF results, including maximum DCF values, error estimations, 
+                      estimated delays, and corresponding bins. It also includes statistical measures such 
+                      as mean and mode of estimated delays and their uncertainties.
+    """
     dcf = np.zeros(t.shape[0])
     dcferr = np.zeros(t.shape[0])
     n = np.zeros(t.shape[0])
@@ -157,8 +173,10 @@ def find_dcf_delay(fuenteLead, fuenteDelayed, trudelay, prep_technique):
     prep_technique = prep_technique
     dcf_Results = None
     list_lndcf = []
+    # Initialize variables for the DCF calculation process
     min_value = None
     max_value = None
+    # Initial bin width
     i = 1.5 #iteration/bin 1/1.5, 2/2.0, 3/2.5, 4/3.0, 5/3.5, 6/4.0, 7/4.5, 8/5.0
     trueDelay = trudelay
     bandera_01_20 = None
@@ -231,6 +249,7 @@ def find_dcf_delay(fuenteLead, fuenteDelayed, trudelay, prep_technique):
             delta_min, delta_max, bandera_420_440, tope, range_low, range_high = 385, 435, 1, 29, 419.95, 440.05  
 
         list_lndcf.append(["DCF_Max","DCFERR","EstimatedDelay", "bin", "delta min", "delta max", "True delay", "prep_technique","error"])
+        # Loop to iterate over different bin widths and calculate DCF for each
         for t in range(0,8):
             if t == 0:
                 delta_min_initial = delta_min
@@ -238,15 +257,19 @@ def find_dcf_delay(fuenteLead, fuenteDelayed, trudelay, prep_technique):
             delta_min = delta_min_initial
             delta_max = delta_max_initial
             for k in range(tope):
+            # Adjust delta range based on bin width and calculate DCF
                 DT = i            
                 N = int(np.around((delta_max - delta_min) / float(DT))) #N = np.around((upper1 - lower) / float(DT))
                 T = np.linspace(delta_min + (DT / 2.0), delta_max - (DT / 2.0), N)
+                # Preprocess light curves based on the specified technique
+                # This involves normalization, synchronization of time points, and other adjustments
                 TS1, TS2 = preformat_lightcurves(fuenteLead,fuenteDelayed)
                 DCF, DCFERR = dcf(TS1, TS2, T, DT)
                 #if len(DCF) > 0:
                 DCF = np.nan_to_num(DCF, nan=0.0)
                 DCFERR = np.nan_to_num(DCFERR, nan=0.0)
-                estimateDelay = float (T[np.argmax(DCF)])
+                estimateDelay = float (T[np.argmax(DCF)])# Identify the delay with the maximum DCF value
+                # Append results to the list for later DataFrame construction
                 if range_low <= estimateDelay <= range_high:
                     list_lndcf.append([DCF.max(), DCFERR.max(), T[np.argmax(DCF)], i, delta_min, delta_max, trueDelay, prep_technique, abs(T[np.argmax(DCF)] - trueDelay)])
                 ################################
@@ -399,8 +422,6 @@ def find_dcf_delay(fuenteLead, fuenteDelayed, trudelay, prep_technique):
     dcf_Results['delta min'] = dcf_Results['delta min'].map('{:,.1f}'.format)
     dcf_Results['delta max'] = dcf_Results['delta max'].map('{:,.1f}'.format)    
     dcf_Results['error'] = dcf_Results['error'].map('{:,.4f}'.format)
-    #print(dcf_Results.head())
-    #dcf_Results.to_csv("resultsLNDCF_" + prep_technique + ".csv", index=True, header=True)
     
     return dcf_Results
 

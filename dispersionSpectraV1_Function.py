@@ -31,6 +31,21 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 def calculate_delay(fuenteLead, fuenteDelayed, df_truthrung, prep_technique):
+    """
+    Calculates the estimated time delay between two light curves using a specified preprocessing technique.
+    It uses various delta (time shift) values to find the delay that minimizes the difference between the curves.
+    
+    Parameters:
+        fuenteLead (DataFrame): The leading light curve data.
+        fuenteDelayed (DataFrame): The delayed light curve data.
+        df_truthrung (float): The true time delay between the light curves for simulation purposes.
+        prep_technique (str): The preprocessing technique applied to the light curves before delay estimation.
+    
+    Returns:
+        dfFiltered (DataFrame): A DataFrame containing the estimated delays, the true delay, error metrics,
+                                and the preprocessing technique used. Includes mean, mode, and minimum error
+                                estimations, along with an average of mean and mode estimations.
+    """
     # Initialize mode_row with default values outside the try block
     mode_row = pd.DataFrame({
         'EstimatedDelay': [0],  # default value
@@ -40,14 +55,14 @@ def calculate_delay(fuenteLead, fuenteDelayed, df_truthrung, prep_technique):
         'error': [0],  # default value
         'prep_tech': ['default']  # default value or logic
                         })
+    # Define variables for the estimation process
     delta_min = 0
     delta_max = 0
-    inc = 1
-    #dsFinalList = pd.DataFrame()
-    dfFiltered = pd.DataFrame()
+    inc = 1 # Increment for delta values
+    dfFiltered = pd.DataFrame() # DataFrame to store filtered results
     z = 0
     x = 1
-
+    # Assign file names for clarity
     fuente1 = fuenteLead # getting the name of the first file
     fuente2 = fuenteDelayed  # getting the name of the second file
 
@@ -76,11 +91,21 @@ def calculate_delay(fuenteLead, fuenteDelayed, df_truthrung, prep_technique):
         bandera_400_420 = None
         bandera_420_440 = None
         prep_technique = prep_technique
+        # True delay from the given data
         trueDT = float(df_truthrung)
         print(str(trueDT))
         list_DS = []
         lcB_pctErr = pd.DataFrame(columns=['lcB_Err', 'B'])
         tope,range_low,range_high = 0,0,0
+        # Setting initial parameters based on true delay
+        # (This block defines various 'bandera' flags for different true delay ranges)
+        # Each 'bandera' represents a flag to select the appropriate delta range for estimation
+        # For example, bandera_01_20 is set if trueDT is within 1 to 20
+        # Similar blocks for different ranges of trueDT up to 440.00
+        # These blocks set delta_min and delta_max for the range within which the delay is estimated
+        # Each block also sets 'tope' (limit for iterations), and range_low/high for filtering results
+    
+        # Custom logic based on the true delay to set the range of deltas to test
 
         if trueDT <= 20.00:
             delta_min, delta_max, bandera_01_20, tope, range_low, range_high = 1, 15, 1, 35, 0.50, 21.9
@@ -126,10 +151,18 @@ def calculate_delay(fuenteLead, fuenteDelayed, df_truthrung, prep_technique):
             delta_min, delta_max, bandera_400_420, tope, range_low, range_high = 365, 415, 1, 29, 398.50, 421.50            
         elif 420.00 < trueDT <= 440.00:
             delta_min, delta_max, bandera_420_440, tope, range_low, range_high = 385, 435, 1, 29, 418.50, 441.50 
-        #print(str(tope))
+        # Main loop to calculate the estimated delay
         for l in np.arange(0, tope):
-            #kk = 0
+            # Nested loop, currently iterates only once
             for dd in np.arange(0, 1, 1):
+                # Process the light curves based on prep_technique
+                # This example does not explicitly use prep_technique but it should be used here
+                # to apply different preprocessing techniques to the light curves            
+                # Logic to calculate the estimated delay
+                # This involves creating DataFrame structures for both light curves,
+                # applying the delay (delta), and calculating the 'error' for each delta           
+                # Adjusting the delay based on preprocessing technique and calculating the errors            
+                # After iterating through all deltas, calculate metrics like mean, mode, and minimum error
                 #obtain the two light curves
                 dfA = pd.DataFrame(fuente1)
                 dfB = pd.DataFrame(fuente2)
@@ -356,8 +389,10 @@ def calculate_delay(fuenteLead, fuenteDelayed, df_truthrung, prep_technique):
             mode_row.iloc[0, -1] = 'mode'
     if 'EstimatedDelay' in mode_row and 'trueDelay' in mean_row:  # Ensure columns exist
         mode_row.iloc[0, -2] = abs(mode_row["EstimatedDelay"][0] - mean_row["trueDelay"][0])  # Adjust based on mean_row structure
-######################################
-    #Calculate the min error of the estimated delay and the other parameters
+    ######################################
+    #Calculate the min error of the estimated delay 
+    # Calculate the uncertainty of the estimation
+    # Calculate the mean and mode of the estimated delays and their corresponding errors
     min_row = pd.DataFrame(dflist_DS.loc[minimumLastIdx]).transpose().reset_index(drop=True)    
     min_row.iloc[0, -1] = 'minimum error'        
     last_row = pd.DataFrame({
@@ -370,7 +405,7 @@ def calculate_delay(fuenteLead, fuenteDelayed, df_truthrung, prep_technique):
     dfFiltered = dfFiltered.append(mode_row, ignore_index=False)    
     dfFiltered = dfFiltered.append(last_row, ignore_index=True)
     dfFiltered['uncertainty'] = pd.Series(uncertainty, index=dfFiltered.index)
-    
+    # Return the DataFrame with all the estimated delays, their errors, and the final chosen delay
     return dfFiltered
 
 

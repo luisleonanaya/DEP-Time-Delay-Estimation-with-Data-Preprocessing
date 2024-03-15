@@ -109,8 +109,24 @@ def preformat_lightcurves(df_lcA, df_lcB):
     return lc_A, lc_B
     
     
-def lndcf(lcA, lcB, t, dt):
-    #locally normalized discrete cross-correlation function method
+def lndcf(lcA, lcB, t, dt):    #locally normalized discrete cross-correlation function method
+        """
+    Calculates the time delay between two light curves using the Locally Normalized Discrete Correlation Function (LNDCF),
+    a method that offers enhanced sensitivity to local variations in the data. This approach is crucial for accurately 
+    determining the temporal shifts between light curves in the context of gravitationally lensed quasars, as initially 
+    proposed by Lehar et al. (1992).
+
+    Args:
+        fuenteLead (DataFrame): DataFrame containing the leading light curve data.
+        fuenteDelayed (DataFrame): DataFrame containing the delayed light curve data.
+        trudelay (float): A simulated or known true delay for verification purposes.
+        prep_technique (str): Description of the preprocessing technique applied to the light curves.
+
+    Returns:
+        DataFrame: A comprehensive summary of the LNDCF results, including delay estimations, 
+                   maximum correlation values, errors, and statistical measures such as mean, mode,
+                   and uncertainty in the delay estimation.
+    """
     lndcf = np.zeros(t.shape[0])
     lndcferr = np.zeros(t.shape[0])
     n = np.zeros(t.shape[0])
@@ -206,8 +222,8 @@ def find_lndcf_delay(fuenteLead, fuenteDelayed, trudelay, prep_technique):
     bandera_380_400 = 0
     bandera_400_420 = 0
     bandera_420_440 = 0
-    
-    for p in range(1):
+    # Main loop to calculate LNDCF
+    for p in range(1): # Single iteration
         if 0.1 <= trueDelay <= 20.00:
                  delta_min, delta_max,  bandera_01_20, tope, range_low, range_high = 1, 15, 1, 35, 0.50, 20.05
         elif 20.00 < trueDelay <= 40.00:
@@ -253,14 +269,15 @@ def find_lndcf_delay(fuenteLead, fuenteDelayed, trudelay, prep_technique):
         elif 420.00 < trueDelay <= 440.00:
             delta_min, delta_max, bandera_420_440, tope, range_low, range_high = 385, 435, 1, 29, 419.95, 440.05  
             
-        list_lndcf.append(["LNDCF_Max","LNDCFERR","EstimatedDelay", "bin", "delta min", "delta max", "True delay", "prep_technique","error"])
-        for t in range(0,8):
+        list_lndcf.append(["LNDCF_Max","LNDCFERR","EstimatedDelay", "bin", "delta min", "delta max", "True delay", "prep_technique","error"]) # Initialize result list
+        for t in range(0,8): # Iterates over bin sizes or other parameter sets
             if t == 0:
                 delta_min_initial = delta_min
                 delta_max_initial = delta_max
             delta_min = delta_min_initial
             delta_max = delta_max_initial
             for k in range(tope):
+            # Iteration over delta ranges for LNDCF calculation
                 DT = i            
                 N = int(np.around((delta_max - delta_min) / float(DT))) #N = np.around((upper1 - lower) / float(DT))
                 T = np.linspace(delta_min + (DT / 2.0), delta_max - (DT / 2.0), N)
@@ -269,10 +286,11 @@ def find_lndcf_delay(fuenteLead, fuenteDelayed, trudelay, prep_technique):
                 #if len(DCF) > 0:
                 DCF = np.nan_to_num(DCF, nan=0.0)
                 DCFERR = np.nan_to_num(DCFERR, nan=0.0)
+                # Append results to the list for DataFrame construction
                 estimateDelay = float (T[np.argmax(DCF)])
                 if range_low <= estimateDelay <= range_high:
                     list_lndcf.append([DCF.max(), DCFERR.max(), T[np.argmax(DCF)], i, delta_min, delta_max, trueDelay, prep_technique, abs(T[np.argmax(DCF)] - trueDelay)])
-                ################################
+                # Conditional logic based on 'bandera' flags to adjust delta ranges
                 if bandera_01_20 == 1:
                     #print("entro al if bandera 01 20")
                     delta_tuple = (delta_min, delta_max)
@@ -369,8 +387,9 @@ def find_lndcf_delay(fuenteLead, fuenteDelayed, trudelay, prep_technique):
                      delta_tuple = (delta_min, delta_max)
                      if delta_tuple in delta_options_420_440:
                         delta_min, delta_max = delta_options_420_440[delta_tuple]  
-            i += 0.5    
+            i += 0.5  # Adjust bin width for next iteration  
     #starting to construct the output dataframe
+    # Calculate statistical measures and append to DataFrame
     dcf_Results = pd.DataFrame(list_lndcf)
     dcf_Results = dcf_Results.rename({0 :"LNDCF_Max", 1 :"LNDCFERR", 2 :"EstimatedDelay", 3 :"bin", 4 :"delta min", 5 :"delta max", 6 :"True delay", 7 :"prep_technique", 8 :"error"}, axis='columns')
     dcf_Results = dcf_Results.drop(0)   
@@ -422,8 +441,6 @@ def find_lndcf_delay(fuenteLead, fuenteDelayed, trudelay, prep_technique):
     dcf_Results['delta min'] = dcf_Results['delta min'].map('{:,.1f}'.format)
     dcf_Results['delta max'] = dcf_Results['delta max'].map('{:,.1f}'.format)    
     dcf_Results['error'] = dcf_Results['error'].map('{:,.4f}'.format)
-    #print(dcf_Results.head())
-    #dcf_Results.to_csv("resultsLNDCF_" + prep_technique + ".csv", index=True, header=True)
     
     return dcf_Results
 

@@ -8,86 +8,65 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
-"""
-df = pd.read_csv('tdc1_rung3_double_pair434.txt', skiprows=[0,1, 2, 3, 4, 5 ], header=None, delim_whitespace=True, names=('time','lc_A','err_A','lc_B','err_B'))
-#percentage error for both light curves
-
-# Option 1: Split based on columns
-df1 = df[['time', 'lc_A', 'err_A']].copy()
-df2 = df[['time', 'lc_B', 'err_B']].copy()
-
-df1.loc[:, 'pctErr_A'] = df1['err_A'] / df1['lc_A']
-df2.loc[:, 'pctErr_B'] = df2['err_B'] / df2['lc_B']
-#display first five lines of the DataFrame
-print(df1)
-
-# Save df1 to CSV
-df1.to_csv('df1.csv', index=False)
-
-# Save df2 to CSV
-df2.to_csv('df2.csv', index=False)
-"""
 
 
 def data_differencing(ts1, ts2, trudelay):
-# Extraer las columnas requeridas
+    """
+    Applies differencing to light curve data to highlight changes between consecutive measurements, 
+    followed by MinMax scaling for normalization. This preprocessing step is crucial for time series analysis, 
+    making patterns more discernible and reducing noise.
+    
+    Parameters:
+        ts1 (DataFrame): DataFrame containing the first light curve's data, with 'time', 'lc_A', and 'pctErr_A'.
+        ts2 (DataFrame): DataFrame for the second light curve, similar to ts1, but for 'lc_B' and 'pctErr_B'.
+        trudelay (int): Known time delay between the light curves, reserved for future use.
+        
+    Returns:
+        df_lcA (DataFrame): DataFrame for light curve A after differencing, with differenced magnitudes, time points, 
+        and recalculated errors.
+        df_lcB (DataFrame): Similar to df_lcA, for light curve B.
+    """
+    # Extract the required columns from the input DataFrames
     dfA = ts1
     dfB = ts2
     
-    time_diff = dfA['time']
-    time_diff = time_diff.tail(-1)
+    # Prepare the time series by removing the first value, as differencing reduces the series length by one
+    time_diff = dfA['time'].tail(-1)  # Adjust the time array to match the length of the differenced data
 
-    differenced_mag_A = dfA['lc_A'].diff()
-    differenced_mag_B = dfB['lc_B'].diff()
+    # Perform differencing on the light curve magnitudes to highlight changes between consecutive measurements
+    differenced_mag_A = dfA['lc_A'].diff()  # Differencing for light curve A
+    differenced_mag_B = dfB['lc_B'].diff()  # Differencing for light curve B
 
-     # Realizar la estandarización de las series de tiempo
+    # Normalize the differenced series using MinMaxScaler to bring them to a common scale
     scaler = MinMaxScaler(feature_range=(0.1, 1))
-    differenced_mag_A = scaler.fit_transform(differenced_mag_A.values.reshape(-1, 1)).flatten()
-    differenced_mag_B = scaler.fit_transform(differenced_mag_B.values.reshape(-1, 1)).flatten()
+    differenced_mag_A = scaler.fit_transform(differenced_mag_A.values.reshape(-1, 1)).flatten()  # Flatten the array post-scaling
+    differenced_mag_B = scaler.fit_transform(differenced_mag_B.values.reshape(-1, 1)).flatten()  # Flatten the array post-scaling
 
-    diff_magerr_A =  differenced_mag_A * dfA['pctErr_A']
-    diff_magerr_B = differenced_mag_B * dfB['pctErr_B']
+    # Calculate the errors for the differenced values based on original percentage errors
+    diff_magerr_A = differenced_mag_A * dfA['pctErr_A']  # Error calculation for differenced light curve A
+    diff_magerr_B = differenced_mag_B * dfB['pctErr_B']  # Error calculation for differenced light curve B
 
-    differenced_mag_A = pd.Series(differenced_mag_A).tail(-1)
-    diff_magerr_A = pd.Series(diff_magerr_A).tail(-1)
-    differenced_mag_B = pd.Series(differenced_mag_B).tail(-1)
-    diff_magerr_B = pd.Series(diff_magerr_B).tail(-1)
+    # Removing the first NaN value resulted from the differencing operation
+    differenced_mag_A = pd.Series(differenced_mag_A).tail(-1)  # Remove NaN value for A
+    diff_magerr_A = pd.Series(diff_magerr_A).tail(-1)  # Adjust error series length for A
+    differenced_mag_B = pd.Series(differenced_mag_B).tail(-1)  # Remove NaN value for B
+    diff_magerr_B = pd.Series(diff_magerr_B).tail(-1)  # Adjust error series length for B
 
+    # Constructing the output DataFrames with differenced and normalized magnitudes and corresponding errors
     lightCurve_A = {
-    'time_diff': time_diff,
-    'differenced_mag_A': differenced_mag_A,
-    'diff_magerr_A': diff_magerr_A,
+        'time_diff': time_diff,
+        'differenced_mag_A': differenced_mag_A,
+        'diff_magerr_A': diff_magerr_A,
     }
     
     lightCurve_B = {
-    'time_diff': time_diff,
-    'differenced_mag_B': differenced_mag_B,
-    'diff_magerr_B': diff_magerr_B
+        'time_diff': time_diff,
+        'differenced_mag_B': differenced_mag_B,
+        'diff_magerr_B': diff_magerr_B
     }
         
-    df_lcA = pd.DataFrame(lightCurve_A)
-    df_lcB = pd.DataFrame(lightCurve_B)
+    df_lcA = pd.DataFrame(lightCurve_A)  # DataFrame for differenced and normalized light curve A
+    df_lcB = pd.DataFrame(lightCurve_B)  # DataFrame for differenced and normalized light curve B
     
     return df_lcA, df_lcB
-    """
-    # Save df1 to CSV
-    df_lcA.to_csv('dfDtaDiffts1.csv', index=False)
 
-    # Save df2 to CSV
-    df_lcB.to_csv('dfDtaDiffts2.csv', index=False)
-    
-    fig1, ax1 = plt.subplots()
-    fig2, ax2 = plt.subplots()
-    # Graficar las series de tiempo con líneas que conectan los puntos y color personalizado
-    ax1.errorbar(time_diff, differenced_mag_A, yerr=diff_magerr_A, fmt='o-', markersize=2, label='mag_A', color='blue', linewidth=0.4)
-    ax1.plot(time_diff, differenced_mag_A, linewidth=0.3, color='black')
-    ax1.set_xlabel('time')
-    ax1.set_ylabel('Magnitud')
-    ax1.set_title(' mag_A')
-
-    ax2.errorbar(time_diff, differenced_mag_B, yerr=diff_magerr_B, fmt='o-', markersize=2, label='mag_B', color='green', linewidth=0.4)
-    ax2.plot(time_diff, differenced_mag_B, linewidth=0.3, color='black')
-    ax2.set_xlabel('time')
-    ax2.set_ylabel('Magnitud')
-    ax2.set_title(' mag_B')
-    """
