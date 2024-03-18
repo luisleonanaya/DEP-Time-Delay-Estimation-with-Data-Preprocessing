@@ -56,7 +56,7 @@ Support
 For questions or issues related to DEP, please contact us at lanaya@astro.unam.mx.
 Citation
 
-If you use DEP in your research, please cite the following paper: Leon-Anaya et al., 2024.
+If you use DEP in your research, please cite the following paper: Leon-Anaya, Octavio Valenzuelaa, Juan C. Cuevas-Tello, 2024.
 License
 
 DEP is released under the GNU General Public License v3.0. See the LICENSE file for more details.
