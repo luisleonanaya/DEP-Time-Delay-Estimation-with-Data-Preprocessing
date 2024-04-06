@@ -14,17 +14,17 @@ DEP is a comprehensive software tool designed to facilitate the estimation of ti
 
 Ensure you have Python 3.8 or newer installed on your system. DEP can be installed using the following steps:
 
+First, clone the repository to your local machine:
+
+```bash
+git clone https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing
+cd DEP-Time-Delay-Estimation-with-Data-Preprocessing
+
+Then, you can run the main script directly with Python:
+
 bash
 
-    git clone https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing
-    cd DEP
-    python setup.py install
-
-To install locally (without admin privileges):
-
-bash
-
-    python setup.py install --user
+    python time_delay_estimation_tool_V1.py
 
 ## Requirements
 
@@ -49,6 +49,13 @@ bash
 
 Follow the on-screen instructions to upload light curves, select preprocessing techniques, and perform time-delay estimation.
 
+## Releases
+Download the appropriate executable for your OS from the releases page:
+
+    Windows: DEP-v1.0-windows.zip
+    macOS: td_estimation_tool_macOS-v1.0.zip
+    Linux: DEP_estimation_tool_linux-v1.0.zip
+
 ## Documentation
 
 For detailed information on DEP's features and functionalities, refer to the DEP User Manual. The manual provides step-by-step instructions on using DEP, from data input to result interpretation.
@@ -59,7 +66,8 @@ For questions or issues related to DEP, please contact us at lanaya@astro.unam.m
 
 ## Citation
 
-If you use DEP in your research, please cite the following paper: Luis Leon-Anaya, Octavio Valenzuela, Juan C. Cuevas-Tello, 2024.
+If you use DEP in your research, please cite the following paper: 
+Luis Leon-Anaya, Juan C Cuevas-Tello, Octavio Valenzuela, César A Puente, Carlos Soubervielle-Montalvo, Data science methodology for time-delay estimation and data preprocessing of the time-delay challenge, Monthly Notices of the Royal Astronomical Society, Volume 522, Issue 1, June 2023, Pages 1323–1341, https://doi.org/10.1093/mnras/stad817
 
 ## License
 
