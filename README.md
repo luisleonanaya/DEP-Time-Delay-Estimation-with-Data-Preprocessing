@@ -26,7 +26,7 @@ bash
 
     python time_delay_estimation_tool_V1.py
 
-## Requirements
+# Requirements
 
 DEP relies on standard Python packages:
 * numpy
