@@ -1,3 +1,4 @@
+
 # DEP-Time-Delay-Estimation-with-Data-Preprocessing
 DEP: Time Delay Estimation with Data Preprocessing
 
@@ -16,9 +17,9 @@ Ensure you have Python 3.8 or newer installed on your system. DEP can be install
 
 First, clone the repository to your local machine:
 
-```bash
-git clone https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing
-cd DEP-Time-Delay-Estimation-with-Data-Preprocessing
+bash
+    git clone https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing
+    cd DEP-Time-Delay-Estimation-with-Data-Preprocessing
 
 Then, you can run the main script directly with Python:
 
@@ -26,7 +27,7 @@ bash
 
     python time_delay_estimation_tool_V1.py
 
-# Requirements
+## Requirements 
 
 DEP relies on standard Python packages:
 * numpy
