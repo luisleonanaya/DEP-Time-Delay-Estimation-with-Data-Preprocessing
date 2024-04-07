@@ -55,7 +55,9 @@ Download the appropriate executable for your OS from the releases page:
 
    
    Windows: [DEP-v1.0-windows.zip](https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing/releases/download/DEP-v1.0-windows/DEP_estimation_tool_V1_windows.zip)
+   
    macOS: [td_estimation_tool_macOS-v1.0.zip](https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing/releases/download/DEP-v1.0-macOS/td_estimation_tool_macOS.zip)
+   
    Linux: [DEP_estimation_tool_linux-v1.0.zip](https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing/releases/download/DEP-linux-v1.0/DEP_estimation_tool_linux.zip)
 
 ## Documentation
