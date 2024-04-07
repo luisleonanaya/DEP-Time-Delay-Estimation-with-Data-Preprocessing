@@ -58,8 +58,18 @@ Download the appropriate executable for your OS from the releases page:
     Linux: DEP_estimation_tool_linux-v1.0.zip
 
 ## Documentation
+To get the most out of DEP and understand its comprehensive features and functionalities, we provide two primary documents:
 
-For detailed information on DEP's features and functionalities, refer to the DEP User Manual. The manual provides step-by-step instructions on using DEP, from data input to result interpretation.
+- **DEP User Manual**: This manual offers step-by-step instructions on how to use DEP, guiding you through data input, the use of preprocessing techniques, and result interpretation. It's designed to help both new and experienced users navigate the application efficiently.
+
+- **DEP Technical Documentation v1.0**: For those interested in the technical underpinnings of DEP, this document details the functionality and purpose of each function within the software. It's especially useful for developers or researchers who wish to understand the inner workings of the tool or contribute to its development.
+
+Both documents can be found in the Releases section of the GitHub repository:
+
+- [DEP User Manual](https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing/releases/download/DEP-v1.0/DEP_User_Manual_v1.0.pdf)
+- [DEP Technical Documentation v1.0](https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing/releases/download/DEP-v1.0/DEP_Technical_Documentation_v1.0.pdf)
+
+We encourage you to consult these documents to fully leverage DEP in your research and projects.
 
 ## Support
 
