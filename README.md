@@ -31,9 +31,9 @@ Option 2: Downloading the Files
 
 Alternatively, you can download the project files directly from GitHub:
 
-    Navigate to the repository at https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing.
-    Click on the Code button and select Download ZIP.
-    Unzip the downloaded file and navigate into the project directory.
+Navigate to the repository at https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing.
+Click on the Code button and select Download ZIP.
+Unzip the downloaded file and navigate into the project directory.
 
 Installing Dependencies
 
@@ -41,8 +41,16 @@ Before running the application, install the necessary Python packages:
 
 bash
 
-pip install -r requirements.txt
+    pip install -r requirements.txt
 
+Running the Application
+
+After installation, you can run the main script directly with Python:
+
+bash
+
+    python time_delay_estimation_tool_V1.py
+    
 ## Requirements 
 
 DEP relies on standard Python packages:
