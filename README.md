@@ -3,7 +3,7 @@
 DEP: Time Delay Estimation with Data Preprocessing
 
 DEP is a comprehensive software tool designed to facilitate the estimation of time delays between multiple images of a lensed quasar. Tailored for astronomers and astrophysicists, DEP integrates advanced data preprocessing techniques with a user-friendly graphical interface, enhancing the accuracy and accessibility of time-delay cosmography.
-
+Watch the Video Here: Introduction to DEP Software; https://youtu.be/lzAryA74oR4
 ## Features
 
 * Intuitive GUI: Simplifies the analysis process, making advanced computational methods accessible to users without programming expertise.
