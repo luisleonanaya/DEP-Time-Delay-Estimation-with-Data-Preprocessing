@@ -93,9 +93,8 @@ To get the most out of DEP and understand its comprehensive features and functio
 
 Both documents can be found in the Releases section of the GitHub repository:
 
-- [User Manual](https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing/files/14612260/DEP_User_Manual_v1.0.pdf)
-- [DEP User Manual](https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing/releases/download/DEP-v1.0/DEP_User_Manual_v1.0.pdf)
-- [DEP Technical Documentation v1.0](https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing/releases/download/DEP-v1.0/DEP_Technical_Documentation_v1.0.pdf)
+- [User Manual v1.0](https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing/files/14612260/DEP_User_Manual_v1.0.pdf)
+- [Technical Documentation v1.0](https://github.com/luisleonanaya/DEP-Time-Delay-Estimation-with-Data-Preprocessing/files/14612299/DEP-Technical-Documentation-V1.0.pdf)
 
 We encourage you to consult these documents to fully leverage DEP in your research and projects.
 
